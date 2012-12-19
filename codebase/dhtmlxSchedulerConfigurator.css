@@ -1,0 +1,491 @@
+body {
+	width: 98%;
+	background-color: #eeeeee;
+	font-family: 'Tahoma';
+	font-size: 9pt;
+}
+
+div.dhtmlxLeftDiv {
+	float: left;
+	width: 47%;
+	padding-left: 0px;
+	padding-top: 0px;
+}
+
+div.dhtmlxRightDiv {
+	float: right;
+	width: 47%;
+	padding-right: 0px;
+	padding-top: 0px;
+}
+
+div.dhtmlxBottomDiv {
+	width: 100%;
+	padding: 10px;
+	padding-left:0%;
+	padding-right:0%;
+	margin-top: 20px;
+}
+
+div.dhtmlxAccessDiv {
+	width: 96%;
+	padding-left: 0%;
+	padding-top: 2%;
+}
+
+div.dhtmlxSettingPanel {
+	border: 1px solid #aaaaaa;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	padding: 10px;
+}
+
+div.dhtmlxSettingPanelLabel {
+	font-family: 'Tahoma';
+	font-weight: bold;
+	font-size: 10pt;
+	position: relative;
+	top: -20px;
+	left: 0px;
+	background-color: #eeeeee;
+	overflow-x: visible;
+	text-align: left;
+	padding-left: 8px;
+	padding-right: 8px;
+	display: inline;
+}
+
+.dhtmlxInputText {
+	width: 30%;
+	float: right;
+	height: 21px;
+}
+
+.dhtmlxTextarea {
+	width: 100%;
+	height: 42px;
+	padding-left: 20px;
+}
+
+.dhtmlxInputText_customfields{
+	width: 60%;
+	display: block;
+	float: right;
+	height: 21px;
+}
+
+label.dhtmlxInputLabel {
+	width: 60%;
+	float: left;
+	height: 18px;
+	text-align: left;
+	padding-top: 2px;
+	padding-left: 10px;
+}
+
+label.dhtmlxInputLabel_customfields {
+	width: 36%;
+	float: left;
+	height: 18px;
+	text-align: left;
+	padding-top: 2px;
+	padding-left: 10px;
+}
+
+label.dhtmlxInputLabel.short {
+	width: 130px;
+}
+
+div.dhtmlxInputCheckbox {
+	padding-left: 5px;
+	height: 20px;
+	float: left;
+}
+
+select.dhtmlxInputSelect {
+	width: 40%;
+	padding-left: 5px;
+	height: 20px;
+}
+
+select.dhtmlxInputSelect.cf {
+	width: 120px;
+}
+
+div.clr {
+	clear: both;
+	height: 4px;
+	font-size: 1px;
+}
+
+div.clr_label {
+	clear: both;
+	height: 1px;
+	font-size: 1px;
+}
+
+div.clr_ch {
+	clear: both;
+	height: 1px;
+	font-size: 1px;
+}
+
+table.dhtmlxAccessTable {
+	width: 100%;
+	font-size: 9pt;
+	font-family: 'Tahoma';
+}
+
+table.dhtmlxAccessTable td.dhtmlxViewCol, table.dhtmlxAccessTable th.dhtmlxViewCol, table.dhtmlxAccessTable td.dhtmlxAddCol, table.dhtmlxAccessTable th.dhtmlxAddCol,
+	table.dhtmlxAccessTable td.dhtmlxEditCol, table.dhtmlxAccessTable th.dhtmlxEditCol, table.dhtmlxAccessTable td.dhtmlxViewColBottom,
+	table.dhtmlxAccessTable td.dhtmlxAddColBottom, table.dhtmlxAccessTable td.dhtmlxEditColBottom	{
+	width: 20%;
+	text-align: center;
+	vertical-align: middle;
+	border-bottom: 1px solid #dddddd;
+	border-left: 1px solid #dddddd;
+}
+
+table.dhtmlxAccessTable td.dhtmlxLeftCol, table.dhtmlxAccessTable th.dhtmlxLeftCol, table.dhtmlxAccessTable td.dhtmlxLeftColBottom {
+	text-align: left;
+	padding-left: 50px;
+	vertical-align: middle;
+	border-bottom: 1px solid #dddddd;
+}
+
+table.dhtmlxAccessTable td.dhtmlxViewColBottom, table.dhtmlxAccessTable td.dhtmlxAddColBottom, 
+	table.dhtmlxAccessTable td.dhtmlxEditColBottom, table.dhtmlxAccessTable td.dhtmlxLeftColBottom {
+	border-bottom: none;
+}
+
+select.dhtmlxSelectCustomField {
+	width: 102px;
+	margin-top: 20px;
+	height: 162px;
+}
+
+.dhtmlxInvalidValue {
+	background-color: #FF3F3F;
+}
+
+div.hint {
+	padding-left: 10px;
+	padding-top: 20px;
+	font-size: 8pt;
+	text-align: right;
+}
+
+div.hint a {
+	color: #058CB6;
+}
+
+input.customfields_delete_btn {
+	float: right;
+	height: 20px;
+	font-size: 11px;
+}
+
+input.customfields_addnew_btn {
+	font-size: 11px;
+	height: 20px;
+	width: 104px;
+}
+
+input.customfields_addoption_btn {
+	font-size: 11px;
+	height: 20px;
+	width: 104px;
+}
+
+/*Remove button padding in FF*/
+input.customfields_addnew_btn::-moz-focus-inner, input.customfields_delete_btn::-moz-focus-inner,
+input.customfields_addoption_btn::-moz-focus-inner, input.input.customfields_addoption_btn::-moz-focus-inner{
+    border: 0;
+    padding: 0;
+}
+
+
+.units, .timeline {
+	float: left;
+	padding: 6px;
+	width: 200px;
+}
+
+.timeline {
+	width: 270px;
+}
+
+.export_progressbar {
+	width: 45px;
+	height: 30px;
+	background-image: url('./imgs/export_progressbar.gif');
+	background-repeat: no-repeat;
+	background-position: 11px center;
+	display: none;
+	float: left;
+}
+
+.export_btn {
+	width: 129px;
+	height: 16px;
+	background-image: url('./imgs/export_btn.png');
+	background-repeat: no-repeat;
+	background-position: center 0px;
+	cursor: pointer;
+	font-weight: bold;
+	font-size: 12px;
+	text-align: center;
+	padding: 8px;
+	position: relative;
+}
+
+.export_btn.hover {
+	background-position: center -32px;
+}
+
+.export_btn.hidden {
+	background-position: center -64px;
+}
+
+.export_btn .direction {
+	width: 34px;
+	height: 19px;
+	margin-top: 6px;
+	position: absolute;
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.export_btn .direction.toright {
+	right: 15px;
+	top: 0px;
+	background-image: url('./imgs/export_dir.png');
+	background-repeat: no-repeat;
+	background-position: center 0px;
+}
+
+.export_btn.hidden .direction.toright {
+	background-position: center -19px;
+}
+
+.export_btn .direction.toleft {
+	left: 15px;
+	top: 0px;
+	background-image: url('./imgs/export_dir.png');
+	background-repeat: no-repeat;
+	background-position: center -38px;
+}
+.export_btn.hidden .direction.toleft {
+	background-position: center -57px;
+}
+
+.export_btn.hidden {
+	#border: 1px solid #ff0000;
+}
+
+.export_btn.left {
+	float: left;
+}
+
+.export_btn.right {
+	float: right;
+}
+
+.dhx_label, .google_label {
+	width: 120px;
+	float: left;
+	font-size: 17px;
+	font-weight: bold;
+	text-align: center;
+	padding-bottom: 15px;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-left: 7px;
+	margin-right: 7px;
+}
+
+.google_label {
+	float: right;
+}
+
+.result_hint {
+	border: 1px solid #AAA;
+	border-top: none;
+	margin-bottom: 20px;
+	text-align: left;
+	padding: 4px 14px 4px 14px;
+	display: none;
+
+	-webkit-border-bottom-right-radius: 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-moz-border-radius-bottomright: 8px;
+	-moz-border-radius-bottomleft: 8px;
+	border-bottom-right-radius: 8px;
+	border-bottom-left-radius: 8px;
+
+	-moz-transition: margin-top 0.3s ease;
+	-webkit-transition: margin-top 0.3s ease;
+	-o-transition: margin-top 0.3s ease;
+}
+
+.result_hint.shown {
+	margin-top: 0px;
+}
+
+.result_hint.hidden {
+	margin-top: -24px;
+}
+
+.result_hint.success {
+	background-color: #11ED11;
+}
+
+.result_hint.error {
+	background-color: #FC232E;
+}
+
+
+.color_preview {
+	width: 20px;
+	height: 20px;
+	border: 1px solid #7F9DB9;
+	float: left;
+	cursor: pointer;
+}
+
+#bg_preview {
+	background-color: #C2D5FC;
+}
+
+#event_preview {
+	background-color: #FFE763;
+}
+
+
+#skins_form {
+	-moz-transition: height 0.5s ease;
+	-webkit-transition: height 0.5s ease;
+	-o-transition: height 0.5s ease;
+	overflow: hidden;
+}
+
+#skins_form.long {
+	height: 360px;
+}
+
+#skins_form.short {
+	height: 14px;
+}
+
+.skin_apply {
+	background-image: url('./imgs/skin_apply.png');
+	background-position: 0px 0px;
+	width: 94px;
+	height: 23px;
+	cursor: pointer;
+	font-weight: normal;
+	font-size: 11px;
+	text-align: center;
+	padding-top: 9px;
+	padding-left: 5px;
+	float: right;
+}
+
+.skin_apply.hover {
+	background-position: 0px -34px;
+}
+
+.presets ul {
+	
+}
+
+.presets .line {
+	cursor: pointer;
+}
+
+.presets .prev {
+	width: 117px;
+	height: 18px;
+	float: left;
+	padding: 0px;
+	text-align: center;
+	border: 1px solid #AAA;
+	margin-top: 6px;
+}
+
+.presets .hover .prev .name {
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=80);
+	-moz-opacity: 0.8;
+	-khtml-opacity: 0.8;
+	opacity: 0.8;
+}
+
+.presets .prev.bg {
+	padding-right: 0px;
+	border-right: none;
+}
+
+.presets .prev.event {
+	padding-left: 0px;
+}
+
+.presets .prev .name {
+	padding-top: 2px;
+	width: 97px;
+	height: 16px;
+	background-color: #EEE;
+}
+.presets .prev.bg .name { float: left; }
+.presets .prev.event .name { float: right; }
+
+.presets .prev .color {
+	width: 18px;
+	height: 18px;
+}
+.presets .prev.bg .color {
+	float: right;
+	border-right: none;
+}
+.presets .prev.event .color {
+	float: left;
+	border-left: none;
+}
+
+.presets .line div.prev.bg.hover {
+	
+}
+
+.presets_label {
+	margin-top: 10px;
+	margin-bottom: 3px;
+	font-weight: bold;
+	
+}
+
+.holder {
+	position: absolute;
+	left: 0px;
+	top: 5px;
+	width: 100%;
+	height: 375px;
+	background-color: #000000;
+	z-index: 200;
+	filter:progid:DXImageTransform.Microsoft.Alpha(opacity=20);
+	-moz-opacity: 0.2;
+	-khtml-opacity: 0.2;
+	opacity: 0.2;
+	display: none;
+}
+
+.skin_progress {
+	position: absolute;
+	left: 0px;
+	top: 5px;
+	width: 100%;
+	height: 375px;
+	background-image: url('./imgs/loading.gif');
+	background-repeat: no-repeat;
+	background-position: center center;
+	z-index: 201;
+	display: none;
+}

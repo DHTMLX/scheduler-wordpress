@@ -1,0 +1,124 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>Access rights</title>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxSchedulerConfigurator.css'>
+	<script src='./../dhtmlx.js'></script>
+</head>
+<script>
+	window.onload = function() {
+		var locale = parent.conf.i18n.access;
+
+		var groups = parent.conf.groups;
+		var table = document.getElementById('acc_groups');
+		for (var i = 0; i < groups.length; i++) {
+			var id = groups[i].id;
+			var label = groups[i].label;
+
+			var tr = document.createElement("tr");
+			var td = document.createElement("td");
+			td.className = "dhtmlxLeftCol";
+			td.innerHTML = label;
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.className = "dhtmlxViewCol";
+			td.innerHTML = '<input type="checkbox" name="access_' + id + '_view" id="access_' + id + '_view" class="dhtmlxInputCheckbox" serialize="true" checked />';
+			tr.appendChild(td);
+
+			td = document.createElement("td");
+			td.className = "dhtmlxAddCol";
+			td.innerHTML = '<input type="checkbox" name="access_' + id + '_add" id="access_' + id + '_add" class="dhtmlxInputCheckbox" serialize="true" />'
+			tr.appendChild(td);
+			
+			td = document.createElement("td");
+			td.className = "dhtmlxEditCol";
+			td.innerHTML = '<input type="checkbox" name="access_' + id + '_edit" id="access_' + id + '_edit" class="dhtmlxInputCheckbox" serialize="true" />';
+			tr.appendChild(td);
+
+			table.firstChild.appendChild(tr);
+		}
+
+		var els = document.getElementsByTagName('*');
+		for (var i in els) {
+			if (els[i].getAttribute) {
+				var attr = els[i].getAttribute('serialize');
+				if (attr == 'true') {
+					dhtmlxEvent(els[i], 'change', function() {
+						parent.conf.getXML();
+					});
+				}
+			}
+			if (els[i].getAttribute) {
+				var text = els[i].getAttribute('locale');
+				if (text) {
+					els[i].innerHTML = locale[text];
+				}
+			}
+		}
+
+		parent.conf.loaded++;
+		parent.conf.loadingCheck();
+	}
+
+	function getOptions() {
+		var xml = '';
+		var groups = parent.conf.groups;
+		for (var i = 0; i < groups.length; i++) {
+			var id = groups[i].id;
+			xml += '<group id="' + id + '">';
+			xml += '<view>' + document.getElementById('access_' + id + '_view').checked + '</view>';
+			xml += '<add>' + document.getElementById('access_' + id + '_add').checked + '</add>';
+			xml += '<edit>' + document.getElementById('access_' + id + '_edit').checked + '</edit>';
+			xml += '</group>';
+		}
+		xml += '<privatemode>' + document.getElementById('privatemode').value + '</privatemode>';
+		return xml;
+	}
+
+	function setOptions(xml) {
+		var els = xml.childNodes;
+		for (var i = 0; i < els.length; i++) {
+			if (els[i].childNodes.length === 3) {
+				var group_id = els[i].getAttribute('id');
+				for (var j = 0; j < els[i].childNodes.length; j++) {
+					var el = els[i].childNodes[j];
+					var option_name = el.nodeName;
+					var option_value = el.firstChild.nodeValue;
+					var ch = document.getElementById('access_' + group_id + '_' + option_name);
+					if (ch) ch.checked = option_value === 'true' ? true : false;
+				}
+			} else {
+				var option_name = els[i].nodeName;
+				var option_value = els[i].firstChild.nodeValue;
+				var el = document.getElementById(option_name);
+				if (el) el.value = option_value;
+			}
+		}
+	}
+</script>
+<body>
+	<div class="dhtmlxAccessDiv" id="access_wp_div">
+		<div class="dhtmlxSettingPanel">
+			<div class="dhtmlxSettingPanelLabel" locale="access">Access rights</div>
+			<table class="dhtmlxAccessTable" id="acc_groups">
+				<tr>
+					<th class="dhtmlxLeftCol">&nbsp;</th>
+					<th class="dhtmlxViewCol" locale="view">View</th>
+					<th class="dhtmlxAddCol" locale="add">Add</th>
+					<th class="dhtmlxEditCol" locale="edit">Edit</th>
+				</tr>
+			</table>
+		</div>
+	</div>
+	
+	<div id="privatemode_cont">
+		<label for="privatemode" class="dhtmlxInputLabel" locale="privatemode" style="float: left; width: 20%;">&nbsp;</label>
+		<select name="private mode" id="privatemode" style="float: left;" serialize="true" value="off">
+			<option value="off" locale="off">&nbsp;</option>
+			<option value="on" locale="privatemode">&nbsp;</option>
+			<option value="ext" locale="privatemodeext">&nbsp;</option>
+		</select>
+	</div>
+</body>
+</html>

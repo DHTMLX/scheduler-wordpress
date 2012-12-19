@@ -1,0 +1,280 @@
+.fake_scheduler {
+	width: 500px;
+	font-size: 11px;
+	margin-top: -16px;
+}
+
+.dhx_cal_container {
+	position: relative;
+	background-position: 0 24px;
+	background-repeat: repeat-x;
+}
+
+.dhx_cal_navline {
+	height: 23px;
+	position: relative;
+	line-height: normal;
+}
+
+.dhx_cal_navline div {
+	position: absolute;
+	z-index: 3;
+	top: 2px;
+	white-space: nowrap;
+}
+
+.dhx_cal_prev_button,
+.dhx_cal_next_button {
+	width: 30px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.dhx_cal_prev_button {
+	left: 50px;
+	background-position: 0px 0px;
+}
+
+.dhx_cal_next_button {
+	left: 80px;
+	background-position: -30px 0px;
+}
+
+.dhx_cal_today_button {
+	width: 67px;
+	height: 17px;
+	cursor: pointer;
+	left: 110px;
+	background-position: -60px 0px;
+	padding-top: 3px;
+}
+
+.dhx_cal_date {
+	padding-top: 4px;
+	left: 190px;
+	font-weight: 600;
+	text-align: center!important;
+}
+
+.dhx_cal_tab {
+	width: 60px;
+	height: 15px;
+	text-decoration: none;
+	padding-top: 4px;
+	margin-top: 4px;
+	cursor: pointer;
+	-webkit-border-top-left-radius: 4px;
+	-webkit-border-top-right-radius: 4px;
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 4px;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+}
+
+.dhx_cal_tab.active {
+	height: 18px;
+	width: 60px;
+	padding-top: 4px;
+	margin-top: 2px;
+	font-weight: bold;
+}
+
+.dhx_cal_header {
+	height: 20px;
+	z-index: 2;
+	position: absolute;
+	top: 24px;
+	left: 50px;
+	width: 450px;
+}
+
+.dhx_scale_bar {
+	background-position: 0px 0px;
+	background-repeat: no-repeat;
+	padding-top: 4px;
+	border-left: 0px;
+	line-height: normal;
+	width: 64px;
+	height: 16px;
+	position: absolute;
+	top: 0px;
+}
+
+.dhx_cal_data {
+	width: 500px;
+	left: 0px;
+	top: 65px;
+	height: 310px;
+	position: absolute;
+	border-top: 1px solid #A4BED4;
+}
+
+.dhx_scale_holder,
+.dhx_scale_holder_now{
+	width: 64px;
+	height: 310px;
+	top: 0px;
+	position: absolute;
+	border-right: 1px solid #A4BED4;
+}
+
+.dhx_scale_hour {
+	height: 30px;
+	border-bottom: 1px solid #A4BED4;
+}
+
+.dhx_multi_day {
+	width: 500px;
+	left: 0px;
+	top: 44px;
+	height: 21px;
+	visibility: visible;
+	position: absolute;
+	background-repeat: repeat;
+	border-top: 1px solid #A4BED4;
+	border-bottom: 1px solid #A4BED4;
+}
+
+.dhx_multi_day_icon {
+	width: 50px;
+	left: 0px;
+	top: 44px;
+	height: 21px;
+	visibility: visible;
+	background-image: url(imgs_glossy/clock_small.png);
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.dhx_cal_event_line {
+	border-radius: 3px;
+	font-family: Tahoma;
+	font-size: 8pt;
+	height: 13px;
+	padding-left: 10px;
+	cursor: pointer;
+	overflow: hidden;
+	border: 1px solid #FFBD51;
+}
+
+.dhx_cal_event div {
+	border: 1px solid #FFBD51;
+	background-color: #FFE4AB;
+}
+
+.dhx_cal_event .dhx_header {
+	height: 1px;
+	margin-left: 1px;
+	border-width: 1px 1px 0px 1px;
+	cursor: pointer;
+}
+
+.dhx_cal_event .dhx_title {
+	height: 12px;
+	border-width: 0px 1px 1px 1px;
+	border-bottom-style: dotted;
+	font-size: 7pt;
+	font-weight: bold;
+	text-align: center;
+	background-position: right;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	overflow: hidden;
+}
+
+.dhx_cal_event .dhx_body {
+	border-width: 0px 1px 1px 1px;
+	padding: 5px;
+}
+
+.dhx_cal_event .dhx_footer {
+	height: 1px;
+	margin-left: 2px;
+	border-width: 0px 1px 1px 1px;
+	cursor: s-resize;
+}
+
+div.dhx_cal_navline div,
+.dhx_scale_bar,
+.dhx_scale_hour,
+.dhx_title {
+	text-align: center!important;
+}
+
+
+.dhx_cal_prev_button {
+	background-image:url(./imgs/buttons.png?nocache=97278);
+}
+
+.dhx_cal_next_button {
+	background-image:url(./imgs/buttons.png?nocache=84708);
+}
+
+.dhx_cal_today_button {
+	background-image:url(./imgs/buttons.png?nocache=12994);
+}
+
+.dhx_scale_holder {
+	background-image:url(imgs/databg.png?nocache=25937);
+}
+
+.dhx_scale_holder_now {
+	background-image:url(imgs/databg_now.png?nocache=72608);
+}
+
+.dhx_agenda_area {
+	background-image:url(./imgs/databg.png?nocache=16351);
+}
+
+.dhx_tooltip {
+	background-image:url(./imgs/databg.png?nocache=23092);
+}
+
+.dhx_map_area {
+	background-image:url(./imgs/databg.png?nocache=68836);
+}
+
+.dhx_cal_container  {
+	background-image:url(imgs/top-days-bg.png?nocache=46988);
+}
+
+.dhx_cal_prev_button {
+	background-image:url(imgs/buttons.gif?nocache=14044);
+}
+
+.dhx_cal_next_button {
+	background-image:url(imgs/buttons.gif?nocache=2865);
+}
+
+.dhx_cal_today_button {
+	background-image:url(imgs/buttons.gif?nocache=70337);
+}
+
+.dhx_cal_tab {
+	background-image:url(imgs/white_tab.png?nocache=91898);
+}
+
+.dhx_cal_tab.active {
+	background-image:url(imgs/blue_tab.png?nocache=65448);
+}
+
+.dhx_cal_header {
+	background-image:url(imgs/top-days-bg.png?nocache=37131);
+}
+
+.dhx_scale_bar {
+	background-image:url(imgs/top-separator.gif?nocache=11486);
+}
+
+.dhx_scale_hour {
+	background-image:url(imgs/left-time-bg.png?nocache=58487);
+}
+
+.dhx_multi_day {
+	background-image:url(imgs/multi-days-bg.png?nocache=79938);
+}
+
+.dhx_cal_event_line {
+	background-image:url(imgs/event-bg.png?nocache=47763);
+}

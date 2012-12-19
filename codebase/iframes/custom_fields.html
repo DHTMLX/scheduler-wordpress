@@ -1,0 +1,499 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>Custom fields</title>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxSchedulerConfigurator.css'>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlx.css'>
+	<script src='./../dhtmlx.js'></script>
+</head>
+<script>
+	var grid;
+	var newFieldsNum = 1;
+	var selectFieldFlag = false;
+	
+	var validation = {
+
+		customfields_name: function(value) {
+			var reg = /^[a-zA-Z_0-9]+$/;
+			var result = reg.test(value);
+			return result;
+		},
+
+		customfields_height: function(value) {
+			var reg = /^[0-9]+(px)?$/;
+			return reg.test(value);
+		}
+	};
+	
+	function set_option(name, value) {
+		var list = document.getElementById('customfields_fieldsList');
+		list.options[list.selectedIndex].setAttribute(name, value);
+		parent.conf.getXML();
+	}
+
+
+	window.onload = function() {
+		var locale = parent.conf.i18n.customfields;
+		dhtmlxEvent(document.getElementById('customfields_colors'), 'click', function() {
+			var value = document.getElementById("customfields_colors").checked;
+			grid.setColumnHidden(2, !value);
+			value = value ? 'true' : 'false';
+			set_option('use_colors', value);
+		});
+
+		dhtmlxEvent(document.getElementById('customfields_units'), 'click', function() {
+			var value = document.getElementById("customfields_units").checked;
+			value = value ? 'true' : 'false';
+			set_option('units', value);
+		});
+
+		dhtmlxEvent(document.getElementById('customfields_timeline'), 'change', function() {
+			var timeline = document.getElementById('customfields_timeline');
+			set_option('timeline', timeline.value);
+		});
+
+		dhtmlxEvent(document.getElementById('customfields_second_scale'), 'click', function() {
+			var timeline = document.getElementById('customfields_second_scale');
+			set_option('timeline_secondscale', timeline.checked? 'true' : 'false');
+		});
+		
+		dhtmlxEvent(document.getElementById('customfields_type'), 'change', function() {
+			var type = document.getElementById('customfields_type');
+			selectType(type);
+			parent.conf.getXML();
+		});
+
+		dhtmlxEvent(document.getElementById('customfields_fieldsList'), 'change',  function() {
+			var selectList = document.getElementById('customfields_fieldsList');
+			selectField(selectList);
+			parent.conf.getXML();
+		});
+
+		var els = document.getElementsByTagName('*');
+		for (var i in els) {
+			if (els[i].getAttribute) {
+				var attr = els[i].getAttribute('serialize');
+				if (attr == 'true') {
+					var elem_id = els[i].id;
+					dhtmlxEvent(els[i], 'change', inputChanged);
+				}
+				var text = els[i].getAttribute('locale');
+				if (text != undefined) {
+					els[i].innerHTML = locale[text];
+				}
+				var text = els[i].getAttribute('localeValue');
+				if (text != undefined) {
+					els[i].value = locale[text];
+				}
+			}
+		}
+
+		grid = new dhtmlXGridObject('customfields_select');
+		grid.setImagePath("./../imgs/");
+		grid.setSkin("dhx_skyblue");
+		grid.setHeader(locale.label+"," + locale.hide + ","+locale.color+",&nbsp;");
+		grid.setInitWidthsP("*,7,7,7");
+		grid.setColTypes("ed,ch,cp,ro");
+		grid.enableMultiselect(false);
+		grid.setColAlign("left,center,center,center");
+		grid.init();
+		grid.setColumnHidden(2, true);
+
+		grid.setSerializationLevel(true, false, false, false, false, true);
+
+		grid.attachEvent("onEditCell", function(stage,rId,cInd,nValue,oValue){
+			if ((stage == 2 && (cInd == 0 || cInd == 2)) || (stage == 1 && cInd == 1)) {
+				var id = document.getElementById('currentFieldId').value;
+				var options = grid.serialize();
+				document.getElementById('customfields_fieldsList').options[id].setAttribute('options', options);
+				parent.conf.getXML();
+			}
+			return true;
+		});
+		document.getElementById('customfields_selectCont').style.display = 'none';
+		selectField(document.getElementById('customfields_fieldsList'));
+		parent.conf.loaded++;
+		parent.conf.loadingCheck();
+	}
+
+
+	function inputChanged() {
+		var elem = this;
+		var name = elem.name;
+		var value = elem.value;
+		if (validation[name]) {
+			var result = validation[name](value);
+			if (result == true) {
+				elem.className = elem.className.replace(/ dhtmlxInvalidValue/g,"");
+			} else {
+				elem.className = elem.className.replace(/ dhtmlxInvalidValue/g,"");
+				elem.className += " dhtmlxInvalidValue";
+			}
+		}
+		parent.conf.getXML();
+		return true;
+	}
+
+
+	function selectField(elem) {
+		var field = elem.options[elem.selectedIndex];
+		selectFieldFlag = true;
+		document.getElementById('dhtmlxCustomFieldName').innerHTML = field.innerHTML;
+		selectFieldFlag = true;
+		document.getElementById('customfields_name').value = field.innerHTML;
+		selectFieldFlag = true;
+		document.getElementById('customfields_dsc').value = field.getAttribute('dsc');
+		selectFieldFlag = true;
+		document.getElementById('customfields_type').value = field.getAttribute('type');
+		document.getElementById('customfields_height').value = field.getAttribute('height');
+		document.getElementById('customfields_timeline').value = field.getAttribute('timeline');
+		document.getElementById('customfields_second_scale').checked = field.getAttribute('timeline_secondscale') == 'true' ? true : false;
+		if (field.getAttribute('use_colors') == 'true') {
+			document.getElementById('customfields_colors').checked = true;
+			var list = document.getElementById('customfields_fieldsList');
+			grid.setColumnHidden(2, false);
+			list.options[list.selectedIndex].setAttribute('use_colors', 'true');
+		} else {
+			document.getElementById('customfields_colors').checked = false;
+			var list = document.getElementById('customfields_fieldsList');
+			grid.setColumnHidden(2, true);
+			list.options[list.selectedIndex].setAttribute('use_colors', 'false');
+		}
+
+		if (field.getAttribute('units') == 'true') {
+			document.getElementById('customfields_units').checked = true;
+			var list = document.getElementById('customfields_fieldsList');
+			list.options[list.selectedIndex].setAttribute('units', 'true');
+		} else {
+			document.getElementById('customfields_units').checked = false;
+			var list = document.getElementById('customfields_fieldsList');
+			list.options[list.selectedIndex].setAttribute('units', 'false');
+		}
+
+		if (list.selectedIndex == 0) {
+			document.getElementById('customfields_name').disabled = true;
+		} else {
+			document.getElementById('customfields_name').disabled = false;
+		}
+		grid.clearAll();
+		grid.loadXMLString(field.getAttribute('options'));
+		selectType(document.getElementById('customfields_type'), field.getAttribute('type'));
+		document.getElementById('currentFieldId').value = field.index;
+	}
+
+
+	function selectType(elem) {
+		var type = elem.options[elem.selectedIndex].value;
+
+		if (type == 'textarea') {
+			document.getElementById("customfields_textCont").style.display = 'block';
+			document.getElementById("customfields_selectCont").style.display = 'none';
+		} else {
+			document.getElementById("customfields_textCont").style.display = 'none';
+			document.getElementById("customfields_selectCont").style.display = 'block';
+			grid.setSizes();
+		}
+
+		if (selectFieldFlag == true) {
+			selectFieldFlag = false;
+			return true;
+		}
+		var id = document.getElementById('currentFieldId').value;
+		document.getElementById('customfields_fieldsList').options[id].setAttribute('type', type);
+	}
+
+
+	function addNewField() {
+		var option = document.createElement('option');
+		option.value = 'New field' + newFieldsNum;
+		option.setAttribute('dsc', 'Description');
+		option.setAttribute('type', 'textarea');
+		option.setAttribute('old_name', '');
+		option.setAttribute('height', '150');
+		option.setAttribute('use_colors', 'false');
+		option.setAttribute('units', 'false');
+		option.setAttribute('timeline', 'off');
+		option.setAttribute('timeline_secondscale', 'false');
+		option.setAttribute('options', '<?xml version="1.0"?><rows></rows>');
+		option.innerHTML = 'New field' + newFieldsNum;
+		var cflist = document.getElementById('customfields_fieldsList');
+		var pos = cflist.options.length;
+		cflist.appendChild(option);
+		newFieldsNum++;
+		cflist.selectedIndex = pos;
+		selectField(cflist);
+		parent.conf.getXML();
+	}
+
+
+	function deleteField() {
+		var id = document.getElementById('currentFieldId').value;
+		if (id == '0') {
+			alert('You can not delete this field!');
+			return false;
+		}
+
+		if (confirm('Do you want to delete this field?')) {
+			document.getElementById('customfields_fieldsList').remove(id);
+			id = parseInt(id) - 1;
+			document.getElementById('customfields_fieldsList').options[id].selected = true;
+			selectField(document.getElementById('customfields_fieldsList'));
+		}
+
+		var id = document.getElementById('currentFieldId').value;
+		var options = grid.serialize();
+		document.getElementById('customfields_fieldsList').options[id].setAttribute('options', options);
+		parent.conf.getXML();
+	}
+
+
+	function editName(value) {
+		if (selectFieldFlag == true) {
+			selectFieldFlag = false;
+			return true;
+		}
+		var id = document.getElementById('currentFieldId').value;
+		document.getElementById('dhtmlxCustomFieldName').innerHTML = value;
+		document.getElementById('customfields_fieldsList').options[id].innerHTML = value;
+		document.getElementById('customfields_fieldsList').options[id].value = value;
+	}
+
+
+	function editDsc(value) {
+		if (selectFieldFlag == true) {
+			selectFieldFlag = false;
+			return true;
+		}
+		var id = document.getElementById('currentFieldId').value;
+		document.getElementById('customfields_fieldsList').options[id].setAttribute('dsc', value);
+	}
+
+
+	function editHeight(value) {
+		if (selectFieldFlag == true) {
+			selectFieldFlag = false;
+			return true;
+		}
+		var id = document.getElementById('currentFieldId').value;
+		document.getElementById('customfields_fieldsList').options[id].setAttribute('height', value);
+	}
+
+
+	function selectOptionAdd(opt, color, hide) {
+		var id = grid.uid()
+		var optionName = (opt||'option');
+		var optionColor = (color||'#dfdfdf');
+		var hide = (hide||'0');
+		grid.addRow(id, optionName + ',' + hide + ',' + optionColor + ',<img src="' + parent.conf.url + 'common/imgs/close.gif" onclick="selectOptionDelete(' + id + ');" style="cursor: pointer;" />');
+		var id = document.getElementById('currentFieldId').value;
+		var options = grid.serialize();
+		document.getElementById('customfields_fieldsList').options[id].setAttribute('options', options);
+		parent.conf.getXML();
+	}
+
+	function selectOptionDelete(id) {
+		if (confirm('Do you want to delete this option?')) {
+			grid.deleteRow(id);
+		}
+		var id = document.getElementById('currentFieldId').value;
+		var options = grid.serialize();
+		document.getElementById('customfields_fieldsList').options[id].setAttribute('options', options);
+		parent.conf.getXML();
+	}
+
+
+	function _isMapReady(isMap) {
+		if (!isMap) return true;
+		var list = document.getElementById('customfields_fieldsList').options;
+		var len = list.length;
+		for (var i = 0; i < len; i++) {
+			if (list[i].innerHTML === 'event_location')
+				return true;
+		}
+		return false;
+	}
+
+
+	function getOptions(isMap) {
+		var xml = '';
+		var isMapReady = _isMapReady(isMap);
+		var list = document.getElementById('customfields_fieldsList').options;
+		var len = list.length;
+		for (var i = 0; i < len; i++) {
+			xml += '<customfield name="' + list[i].innerHTML + 
+					'" dsc="' + list[i].getAttribute('dsc') + 
+					'" type="' + list[i].getAttribute('type') + 
+					'" old_name="' + list[i].getAttribute('old_name') + 
+					'" use_colors="' + list[i].getAttribute('use_colors') + 
+					'" units="' + list[i].getAttribute('units') + 
+					'" timeline="' + list[i].getAttribute('timeline') + '" ';
+			if (list[i].getAttribute('type') == 'textarea') {
+				xml += 'height="' + list[i].getAttribute('height') + '" />';
+			} else {
+				xml += 'timeline_secondscale="' + list[i].getAttribute('timeline_secondscale') + '" ';
+				var options = list[i].getAttribute('options');
+				options = getSelectOptions(options);
+				xml += '>' + options + '</customfield>';
+			}
+			if (i === 0 && !isMapReady)
+				xml += '<customfield name="event_location" dsc="Location" type="textarea" old_name="event_location" use_colors="false" units="false" timeline="off" height="50" />';
+		}
+		return xml;
+	}
+
+
+	function getSelectOptions(xml) {
+		var options = '';
+
+		if (window.DOMParser) {
+			parser=new DOMParser();
+			xmlDoc=parser.parseFromString(xml,"text/xml");
+		} else {
+			xmlDoc=new ActiveXObject("Microsoft.XMLDOM");
+			xmlDoc.async="false";
+			xmlDoc.loadXML(xml);
+		} 
+		var root = xmlDoc.documentElement;
+		var elements = xmlDoc.getElementsByTagName('row');
+		for (var i = 0; i < elements.length; i++) {
+			var cells = elements[i].childNodes;
+			options += '<option hide="' + cells[1].firstChild.nodeValue + '" color="' + cells[2].firstChild.nodeValue + '">' + cells[0].firstChild.nodeValue + '</option>';
+		}
+		return options;
+	}
+
+
+	function setOptions(xml) {
+		var xmlString = '';
+		var els = xml.childNodes;
+		for (var i = 0; i < els.length; i++) {
+			if (els[i].childNodes[0]) {
+				var value = els[i].childNodes[0].nodeValue;
+			} else {
+				var value = '';
+			}
+			var name = els[i].nodeName;
+			var attrs = els[i].attributes;
+			var attrsArray = {};
+			for (var j = 0; j < attrs.length; j++) {
+				attrsArray[attrs[j].nodeName] = attrs[j].nodeValue;
+			}
+			
+			if (i > 0) {
+				addNewField();
+				document.getElementById('customfields_fieldsList').options[i].selected = true;
+				selectField(document.getElementById('customfields_fieldsList'));
+			}
+			
+			document.getElementById('customfields_fieldsList').options[i].setAttribute('old_name', attrsArray.name);
+			editName(attrsArray.name);
+			editDsc(attrsArray.dsc);
+			
+			if (attrsArray.type == 'textarea') {
+				document.getElementById('customfields_fieldsList').options[i].setAttribute('height', attrsArray.height);
+			} else {
+				document.getElementById('customfields_type').options[1].selected = true;
+				selectType(document.getElementById('customfields_type'));
+				if (attrsArray.use_colors == 'true') {
+					var list = document.getElementById('customfields_fieldsList');
+					grid.setColumnHidden(2, false);
+					list.options[list.selectedIndex].setAttribute('use_colors', 'true');
+				} else {
+					var list = document.getElementById('customfields_fieldsList');
+					grid.setColumnHidden(2, true);
+					list.options[list.selectedIndex].setAttribute('use_colors', 'false');
+				}
+				if (attrsArray.units == 'true') {
+					var list = document.getElementById('customfields_fieldsList');
+					list.options[list.selectedIndex].setAttribute('units', 'true');
+				} else {
+					var list = document.getElementById('customfields_fieldsList');
+					list.options[list.selectedIndex].setAttribute('units', 'false');
+				}
+				list.options[list.selectedIndex].setAttribute('timeline', attrsArray.timeline);
+				list.options[list.selectedIndex].setAttribute('timeline_secondscale', attrsArray.timeline_secondscale);
+				var opts = els[i].childNodes;
+				for (var j = 0; j < opts.length; j++) {
+					var name = opts[j].childNodes[0].nodeValue;
+					var color = opts[j].getAttribute('color');
+					var hide = opts[j].getAttribute('hide');
+					selectOptionAdd(name, color, hide)
+				}
+			}
+		}
+		document.getElementById('customfields_fieldsList').options[0].selected = true;
+		selectField(document.getElementById('customfields_fieldsList'));
+	}
+</script>
+<body>
+
+	<div class="dhtmlxTopDiv" style="">
+		<input type="button" name="customfields_addnew" class="customfields_addnew_btn" value="Add new field" localeValue="add_new_field" onclick="addNewField();" />
+	</div>
+	<div class="clr_label">&nbsp;</div>
+	<div class="dhtmlxLeftDiv" style="width: 14%; padding-left: 0%;">
+		<select size="10" name="customfields_fieldsList"  id="customfields_fieldsList" class="dhtmlxSelectCustomField">
+			<option value="text" dsc="text field description" type="textarea" height="15" options="<rows></rows>" selected>text</option>
+		</select>
+	</div>
+
+	<div class="dhtmlxRightDiv" style="width: 86%;">
+		<div class="dhtmlxSettingPanel">
+			<div class="dhtmlxSettingPanelLabel"><span id="dhtmlxCustomFieldName"></span></div>
+			<div class="clr_label">&nbsp;</div>
+			<input type="hidden" id="currentFieldId" value="0" />
+			<label for="customfields_name" class="dhtmlxInputLabel_customfields" locale="name">&nbsp;</label>
+			<input type="text" name="customfields_name" id="customfields_name" value="" class="dhtmlxInputText_customfields" onkeyup="editName(this.value);" serialize="true"  />
+			<div class="clr">&nbsp;</div>
+			<input type="text" name="customfields_dsc" id="customfields_dsc" value="" class="dhtmlxInputText_customfields" onkeyup="editDsc(this.value);" serialize="true"  />
+			<label for="customfields_dsc" class="dhtmlxInputLabel_customfields" locale="dsc">&nbsp;</label>
+			<div class="clr">&nbsp;</div>
+			<label for="customfields_type" class="dhtmlxInputLabel_customfields" locale="type"></label>
+			<select name="customfields_type" id="customfields_type" class="dhtmlxInputText_customfields">
+				<option value="textarea" locale="textarea"></option>
+				<option value="select" locale="select"></option>
+			</select>
+			<div class="clr">&nbsp;</div>
+
+			<div id="customfields_textCont"><label for="customfields_height" class="dhtmlxInputLabel_customfields" locale="height"></label><input name="customfields_height" id="customfields_height" value="" class="dhtmlxInputText_customfields" serialize="true" onkeyup="editHeight(this.value);"  /></div>
+			<div id="customfields_selectCont" style="display: none; padding-left: 10px; padding-right: 12px;">
+				<div id="customfields_select" name="customfields_select" style="width: 100%; height: 100px;"></div>
+				<div class="units">
+					<input type="button" value="Add" localeValue="add_option" class="customfields_addoption_btn" onclick="selectOptionAdd();" />
+					<div class="clr">&nbsp;</div>
+
+					<input type="checkbox" name="customfields_colors" id="customfields_colors" class="dhtmlxInputCheckbox" />
+					<label for="customfields_colors" style="float: none;" class="dhtmlxInputLabel" locale="colors"></label><br>
+
+					<input type="checkbox" name="customfields_units" id="customfields_units" class="dhtmlxInputCheckbox" />
+					<label for="customfields_units" style="float: none;" class="dhtmlxInputLabel" locale="units"></label><br />
+				</div>
+
+				<div class="timeline">
+					<label for="customfields_timeline" locale="timeline_type" class="dhtmlxInputLabel short"></label>
+					<select name="customfields_timeline" id="customfields_timeline" class="dhtmlxInputSelect cf">
+						<option value="off" locale="off">Off</option>
+						<option value="day" locale="day">Day</option>
+						<option value="working_day" locale="working_day">Working day</option>
+						<option value="threedays" locale="threedays">3 days</option>
+						<option value="week" locale="week">Week</option>
+						<option value="working_week" locale="working_week">Working week</option>
+						<option value="month" locale="month">Month</option>
+						<option value="year" locale="year">Year</option>
+					</select>
+					<div class="clr">&nbsp;</div>
+
+					<label for="customfields_second_scale" locale="second_scale" class="dhtmlxInputLabel short"></label>
+					<input type="checkbox" name="customfields_second_scale" id="customfields_second_scale" class="dhtmlxInputCheckbox" style="margin-left: 0px;" />
+					<div class="clr">&nbsp;</div>
+				</div>
+			</div>
+
+			<div class="clr">&nbsp;</div>
+			<input type="button" name="customfields_delete" class="customfields_delete_btn" value="Delete field" localeValue="delete_field" onclick="deleteField();" />
+			<div class="clr">&nbsp;</div>
+		</div>
+		<div class="hint"><span locale="about_customfields">See more about customization details form</span> <a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxscheduler:custom_details_form" target="blank" locale="here">here</a></div>
+	</div>
+</body>
+</html>

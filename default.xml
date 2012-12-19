@@ -1,0 +1,82 @@
+<config>
+	<active_tab>a1</active_tab>
+	<settings>
+		<settings_width>680px</settings_width>
+		<settings_height>600px</settings_height>
+		<settings_eventnumber>5</settings_eventnumber>
+		<settings_link></settings_link>
+		<settings_posts>false</settings_posts>
+		<settings_repeat>true</settings_repeat>
+		<settings_firstday>false</settings_firstday>
+		<settings_multiday>true</settings_multiday>
+		<settings_fullday>false</settings_fullday>
+		<settings_marknow>false</settings_marknow>
+		<settings_singleclick>false</settings_singleclick>
+		<settings_day>true</settings_day>
+		<settings_week>true</settings_week>
+		<settings_month>true</settings_month>
+		<settings_agenda>false</settings_agenda>
+		<settings_week_agenda>false</settings_week_agenda>
+		<settings_year>false</settings_year>
+		<settings_map>false</settings_map>
+		<settings_defaultmode>week</settings_defaultmode>
+		<settings_debug>false</settings_debug>
+		<settings_collision>false</settings_collision>
+		<settings_expand>true</settings_expand>
+		<settings_pdf>true</settings_pdf>
+		<settings_ical>true</settings_ical>
+		<settings_minical>false</settings_minical>
+	</settings>
+	<access>
+		<group id="-1">
+			<view>true</view>
+			<add>false</add>
+			<edit>false</edit>
+		</group>
+		<group id="editor">
+			<view>true</view>
+			<add>true</add>
+			<edit>true</edit>
+		</group>
+		<group id="administrator">
+			<view>true</view>
+			<add>true</add>
+			<edit>true</edit>
+		</group>
+		<group id="8">
+			<view>true</view>
+			<add>true</add>
+			<edit>true</edit>
+		</group>
+		<privatemode>off</privatemode>
+	</access>
+	<templates>
+		<templates_defaultdate><![CDATA[%d %M %Y]]></templates_defaultdate>
+		<templates_monthdate><![CDATA[%F %Y]]></templates_monthdate>
+		<templates_weekdate><![CDATA[%l]]></templates_weekdate>
+		<templates_daydate><![CDATA[%d/%m/%Y]]></templates_daydate>
+		<templates_hourdate><![CDATA[%H:%i]]></templates_hourdate>
+		<templates_monthday><![CDATA[%d]]></templates_monthday>
+		<templates_minmin><![CDATA[5]]></templates_minmin>
+		<templates_hourheight><![CDATA[42]]></templates_hourheight>
+		<templates_starthour><![CDATA[0]]></templates_starthour>
+		<templates_endhour><![CDATA[24]]></templates_endhour>
+		<templates_agendatime><![CDATA[30]]></templates_agendatime>
+		<templates_eventtext><![CDATA[return event.text;]]></templates_eventtext>
+		<templates_eventheader><![CDATA[return scheduler.templates.hour_scale(start) + " - " + scheduler.templates.hour_scale(end);]]></templates_eventheader>
+		<templates_eventbartext><![CDATA[return "<span title='"+event.text+"'>" + event.text + "</span>";]]></templates_eventbartext>
+		<templates_username>false</templates_username>
+	</templates>
+	<customfields>
+		<customfield name="Text" dsc="Description" type="textarea" old_name="Text" use_colors="false" units="false" timeline="null" height="150" />
+	</customfields>
+	<google>
+		<google_email></google_email>
+		<google_cal></google_cal>
+	</google>
+	<skins>
+		<use>false</use>
+		<bg>#C2D5FC</bg>
+		<event>#FFE763</event>
+	</skins>
+</config>

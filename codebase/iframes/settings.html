@@ -1,0 +1,209 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>Settings</title>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxSchedulerConfigurator.css'>
+	<script src='./../dhtmlx.js'></script>
+</head>
+<script>
+
+	var validation = {
+
+		settings_width: function(value) {
+			var reg = /^[0-9]+(px|%)?$/;
+			var result = reg.test(value);
+			return result;
+		},
+		
+		settings_height: function(value) {
+			var reg = /^[0-9]+(px)?$/;
+			return reg.test(value);
+		},
+		
+		settings_eventnumber: function(value) {
+			var reg = /^[0-9]*(px)?$/;
+			return reg.test(value);
+		}
+	};
+
+	window.onload = function() {
+		var locale = parent.conf.i18n.settings;
+		var els = document.getElementsByTagName('*');
+		for (var i in els) {
+			if (els[i].getAttribute) {
+				var attr = els[i].getAttribute('serialize');
+				if (attr == 'true') {
+					dhtmlxEvent(els[i], 'change', inputChanged);
+				}
+			}
+			if (els[i].getAttribute) {
+				var text = els[i].getAttribute('locale');
+				if (text) {
+					els[i].innerHTML = locale[text];
+				}
+			}
+		}
+
+
+		if (!parent.conf.wp_specific) {
+			document.getElementById('wp_specific').style.display = 'none';
+		}
+		parent.conf.loaded++;
+		parent.conf.loadingCheck();
+		
+	}
+
+	function inputChanged() {
+		var name = this.name;
+		var value = this.value;
+		if (validation[name]) {
+			var result = validation[name](value);
+			if (result == true) {
+				this.className = this.className.replace(/ dhtmlxInvalidValue/g,"");
+			} else {
+				this.className = this.className.replace(/ dhtmlxInvalidValue/g,"");
+				this.className += " dhtmlxInvalidValue";
+			}
+		}
+		parent.conf.getXML();
+		return true;
+	}
+
+	function getOptions() {
+		var xml = '';
+		var optionsArray = new Array('settings_width', 'settings_height', 'settings_eventnumber', 'settings_link', 'settings_posts',
+				'settings_repeat', 'settings_firstday', 'settings_multiday', 'settings_fullday', 'settings_marknow', 'settings_singleclick',
+				'settings_day', 'settings_week', 'settings_month', 'settings_agenda', 'settings_week_agenda', 'settings_year', 'settings_map',
+				'settings_defaultmode', 'settings_debug', 'settings_collision',
+				'settings_expand', 'settings_pdf', 'settings_ical', 'settings_minical');
+
+		for (var i = 0; i < optionsArray.length; i++) {
+			
+			var elem = document.getElementById(optionsArray[i]);
+			if (elem.getAttribute('type') == 'checkbox') {
+				xml += '<' + optionsArray[i] + '>' + elem.checked + '</' + optionsArray[i] + ">";
+			} else {
+				xml += '<' + optionsArray[i] + '>' + elem.value + '</' + optionsArray[i] + ">";
+			}
+		}
+		return xml;
+	}
+	
+	function setOptions(xml) {
+		var xmlString = '';
+		var els = xml.childNodes;
+		for (var i = 0; i < els.length; i++) {
+			if (els[i].childNodes[0]) {
+				var value = els[i].childNodes[0].nodeValue;
+			} else {
+				var value = '';
+			}
+			var el = document.getElementById(els[i].nodeName);
+			if (el) {
+				if (el.getAttribute('type') == 'checkbox') {
+					if (value == 'true') {
+						el.checked = true;
+					} else {
+						el.checked = false;
+					}
+				} else {
+					el.value = value;
+				}
+			}
+		}
+	}
+
+	function isMap() {
+		return document.getElementById('settings_map').checked;
+	}
+
+
+</script>
+<body>
+	<div class="dhtmlxLeftDiv">
+		<div class="dhtmlxSettingPanel">
+			<div class="dhtmlxSettingPanelLabel" locale="sizes"></div>
+			<div class="clr_label">&nbsp;</div>
+			<label for="settings_width" class="dhtmlxInputLabel" locale="width"></label><input type="text" name="settings_width" id="settings_width" value="" class="dhtmlxInputText" serialize="true" />
+			<div class="clr">&nbsp;</div>
+			<label for="settings_height" class="dhtmlxInputLabel" locale="height"></label><input type="text" name="settings_height" id="settings_height" value="" class="dhtmlxInputText" serialize="true" />
+			<div class="clr">&nbsp;</div>
+		</div>
+		
+		<div class="dhtmlxSettingPanel" id="wp_specific">
+			<div class="dhtmlxSettingPanelLabel" locale="wp"></div>
+			<div class="clr_label">&nbsp;</div>
+			<label for="settings_link" class="dhtmlxInputLabel" style="width: 50%;" locale="link"></label><br><input type="text" name="settings_link" id="settings_link" value="" class="dhtmlxInputText" style="margin-left: 8px; width: 93%;float: left;" serialize="true" serialize="true" /><br>
+			<div class="clr">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_posts" id="settings_posts" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_posts" class="dhtmlxInputLabel" style="float: left; width: 84%;" locale="posts"></label>
+			<div class="clr">&nbsp;</div>
+		</div>
+		<div class="dhtmlxSettingPanel">
+			<div class="dhtmlxSettingPanelLabel" id="settings_modes_panel" locale="modes"></div>
+			<div class="clr_label">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_day" id="settings_day" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_day" class="dhtmlxInputLabel" locale="day" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_week" id="settings_week" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_week" class="dhtmlxInputLabel" locale="week" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_month" id="settings_month" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_month" class="dhtmlxInputLabel" locale="month" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_agenda" id="settings_agenda" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_agenda" class="dhtmlxInputLabel" locale="agenda" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_week_agenda" id="settings_week_agenda" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_week_agenda" class="dhtmlxInputLabel" locale="week_agenda" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_year" id="settings_year" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_year" class="dhtmlxInputLabel" locale="year" style="float: left; width: 84%;"></label>
+			<div class="clr">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_map" id="settings_map" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_map" class="dhtmlxInputLabel" locale="map" style="float: left; width: 84%;"></label>
+			<div class="clr">&nbsp;</div>
+			<label for="settings_defaultmode" class="dhtmlxInputLabel" locale="defaultmode" style="width: 50%;"></label>
+			<select name="settings_defaultmode" id="settings_defaultmode" class="dhtmlxInputSelect" serialize="true">
+				<option value="day" locale="day"></option>
+				<option value="week" locale="week"></option>
+				<option value="month" locale="month"></option>
+				<option value="agenda" locale="agenda"></option>
+				<option value="week_agenda" locale="week_agenda"></option>
+				<option value="year" locale="year"></option>
+				<option value="map" locale="map"></option>
+			</select>
+			<div class="clr">&nbsp;</div>
+		</div>
+	</div>
+	<div class="dhtmlxRightDiv">
+		<div class="dhtmlxSettingPanel">
+			<div class="dhtmlxSettingPanelLabel" locale="global"></div>
+			<div class="clr_label">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_repeat" id="settings_repeat" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_repeat" class="dhtmlxInputLabel" locale="repeat" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_firstday" id="settings_firstday" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_firstday" class="dhtmlxInputLabel" locale="firstday" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_multiday" id="settings_multiday" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_multiday" class="dhtmlxInputLabel" locale="multiday" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_fullday" id="settings_fullday" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_fullday" class="dhtmlxInputLabel" locale="fullday" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_marknow" id="settings_marknow" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_marknow" class="dhtmlxInputLabel" locale="marknow" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_singleclick" id="settings_singleclick" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_singleclick" class="dhtmlxInputLabel" locale="singleclick" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_collision" id="settings_collision" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_collision" class="dhtmlxInputLabel" locale="collision" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_expand" id="settings_expand" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_expand" class="dhtmlxInputLabel" locale="expand" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_pdf" id="settings_pdf" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_pdf" class="dhtmlxInputLabel" locale="print" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_ical" id="settings_ical" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_ical" class="dhtmlxInputLabel" locale="ical" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_minical" id="settings_minical" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_minical" class="dhtmlxInputLabel" locale="minical" style="float: left; width: 84%;"></label>
+			<div class="clr_ch">&nbsp;</div>
+			<label for="settings_eventnumber" class="dhtmlxInputLabel" locale="events_number"></label><input type="text" name="settings_eventnumber" id="settings_eventnumber" value="" class="dhtmlxInputText" serialize="true" serialize="true" />
+			<div class="clr">&nbsp;</div>
+			<div class="hint"><span locale="about_ext">&nbsp;</span> <a href="http://docs.dhtmlx.com/doku.php?id=dhtmlxscheduler:toc#extensions" target="blank" locale="here">here</a></div>
+		</div>
+		<div class="dhtmlxSettingPanel">
+			<div class="dhtmlxSettingPanelLabel" locale="debug_panel"></div>
+			<div class="clr_label">&nbsp;</div>
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="settings_debug" id="settings_debug" class="dhtmlxInputCheckbox" serialize="true" /></div><label for="settings_debug" class="dhtmlxInputLabel" style="float: left; width: 84%;" locale="debug"></label>
+			<div class="clr_ch">&nbsp;</div>
+		</div>
+	</div>
+</body>
+</html>

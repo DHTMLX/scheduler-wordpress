@@ -1,0 +1,166 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>Settings</title>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxSchedulerConfigurator.css'>
+	<script src='./../dhtmlx.js'></script>
+</head>
+<script>
+
+	var _in_progress = false;
+	var validation = {
+
+		google_email: function(value) {
+			var reg = /^.+@.*\..{1,4}$/;
+			var result = reg.test(value);
+			return result;
+		}
+	};
+
+	window.onload = function() {
+		var locale = parent.conf.i18n.gcal;
+		dhtmlxEvent(document.getElementById('google_email'), 'change', inputChanged);
+		dhtmlxEvent(document.getElementById('google_email'), 'change', function() {
+			document.getElementById("google_cal").value = document.getElementById("google_email").value;
+		});
+		var els = document.getElementsByTagName('*');
+		for (var i in els) {
+			if (els[i].getAttribute) {
+				var text = els[i].getAttribute('locale');
+				if (text) els[i].innerHTML = locale[text];
+			}
+		}
+
+		var import_btn = document.getElementById('import_btn');
+		dhtmlxEvent(import_btn, 'mouseover', function() { hover(import_btn); });
+		dhtmlxEvent(import_btn, 'mouseout', function() { out(import_btn); });
+		var export_btn = document.getElementById('export_btn');
+		dhtmlxEvent(export_btn, 'mouseover', function() { hover(export_btn); });
+		dhtmlxEvent(export_btn, 'mouseout', function() { out(export_btn); });
+
+		parent.conf.loaded++;
+		parent.conf.loadingCheck();
+	}
+	
+	function hover(el) { el.className += " hover"; }
+	function out(el) { el.className = el.className.replace(/ hover/g, ""); }
+
+	function inputChanged() {
+		var name = this.name;
+		var value = this.value;
+		if (validation[name]) {
+			var result = validation[name](value);
+			if (result == true) {
+				this.className = this.className.replace(/ dhtmlxInvalidValue/g,"");
+			} else {
+				this.className = this.className.replace(/ dhtmlxInvalidValue/g,"");
+				this.className += " dhtmlxInvalidValue";
+			}
+		}
+		parent.conf.getXML();
+		return true;
+	}
+
+	function getOptions() {
+		var elem = document.getElementById('google_email');
+		var xml = '<google_email>' + elem.value + '</google_email>';
+		xml += '<google_cal>' + elem.value + '</google_cal>';
+		return xml;
+	}
+
+	function setOptions(xml) {
+		if (!xml) return;
+		var els = xml.childNodes;
+		for (var i = 0; i < els.length; i++) {
+			var value = (els[i].childNodes[0]) ? els[i].childNodes[0].nodeValue : '';
+			var el = document.getElementById(els[i].nodeName);
+			if (el) {
+				if (el.getAttribute('type') == 'checkbox') {
+					el.checked = (value == 'true') ? true : false;
+				} else {
+					el.value = value;
+				}
+			}
+		}
+	}
+
+	function google_export(type) {
+		if (_in_progress) return;
+		var import_btn = document.getElementById('import_btn');
+		var export_btn = document.getElementById('export_btn');
+		import_btn.className += " hidden";
+		export_btn.className += " hidden";
+		var bar = document.getElementById('progressbar');
+		var url = parent.conf.url_load;
+		bar.style.display = 'block';
+		_in_progress = true;
+		
+		var email = document.getElementById('google_email').value;
+		var pass = document.getElementById('google_pass').value;
+		var cal = document.getElementById('google_cal').value;
+		var params = 'email=' + encodeURIComponent(email) +
+			'&pass=' + encodeURIComponent(pass) + 
+			'&cal=' + encodeURIComponent(cal);
+		dhtmlxAjax.get(url + "&google_" + type + "=true&" + params, function(loader) {
+			bar.style.display = 'none';
+			_in_progress = false;
+			import_btn.className = "export_btn right";
+			export_btn.className = "export_btn left";
+			var hint = document.getElementById("result_hint");
+			hint.style.display = 'block';
+			var response = get_response(loader.xmlDoc.responseText);
+			hint.innerHTML = response.message;
+			window.setTimeout(function() { hint.className = "result_hint " + response.status + " shown"; }, 1);
+			window.setTimeout(function() {
+				hint.className = "result_hint hidden";
+				hint.style.display = 'none';
+			}, 3000);
+		});
+	}
+
+	function get_response(text) {
+		try {
+			eval("var msg = " + text);
+		} catch(e) {
+			var msg = { status: 'error', count: 0 };
+		}
+		msg.message = parent.conf.i18n.gcal[msg.status];
+		msg.status = (msg.status === 'success') ? 'success' : 'error';
+		return msg;
+	}
+
+</script>
+<body>
+	<div class="dhtmlxLeftDiv">
+		<div class="dhtmlxSettingPanel" style="height: 134px;">
+			<div class="dhtmlxSettingPanelLabel" locale="account">Account information</div>
+			<div class="clr_label">&nbsp;</div>
+			<label for="google_email" class="dhtmlxInputLabel" locale="email" style="width: 100px;"></label><input type="text" name="google_email" id="google_email" value="" class="dhtmlxInputText" serialize="true" style="width: 220px;" />
+			<div class="clr">&nbsp;</div>
+			<label for="google_pass" class="dhtmlxInputLabel" locale="pass" style="width: 100px;"></label><input type="password" name="google_pass" id="google_pass" value="" class="dhtmlxInputText" serialize="true" style="width: 220px;" />
+			<div class="clr">&nbsp;</div>
+			<label for="google_cal" class="dhtmlxInputLabel" locale="cal" style="width: 100px;"></label><input type="text" name="google_cal" id="google_cal" value="" class="dhtmlxInputText" serialize="true" style="width: 220px;" />
+			<div class="clr">&nbsp;</div>
+			<div class="hint">
+				<span locale="pass_notice">Password is not saved in configuration and used in real time only to take events list from Google calendar.</span>
+			</div>
+			<div class="clr">&nbsp;</div>
+		</div>
+	</div>
+	<div class="dhtmlxRightDiv">
+		<div class="dhtmlxSettingPanel" style="height: 134px; margin-bottom: 0px; position: relative; background-color: #EEE;">
+			<div class="dhtmlxSettingPanelLabel" locale="controls">Import/export</div>
+			<div class="clr_label">&nbsp;</div>
+			<div class="dhx_label">DHTMLX Scheduler</div>
+			<div class="google_label">Google Calendar</div>
+			<div class="clr_label">&nbsp;</div>
+			<div class="clr_label">&nbsp;</div>
+			<div class="export_btn left" onclick="google_export('export');" id="export_btn">Export<div class="direction toright"></div></div>
+			<div class="export_progressbar" id="progressbar"></div>
+			<div class="export_btn right" onclick="google_export('import');" id="import_btn">Import<div class="direction toleft"></div></div>
+			<div class="clr_label">&nbsp;</div>
+		</div>
+		<div class="result_hint hidden" id="result_hint">Events were processed correctly.</div>
+	</div>
+</body>
+</html>

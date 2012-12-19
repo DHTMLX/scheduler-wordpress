@@ -1,0 +1,324 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+	<title>Settings</title>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxSchedulerConfigurator.css'>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxscheduler_fake.css'>
+	<link rel='STYLESHEET' type='text/css' href='./../dhtmlxcolorpicker.css'>
+	<script src='./../dhtmlxcommon.js'></script>
+	<script src='./../dhtmlxcolorpicker.js'></script>
+<!--	<link rel='STYLESHEET' type='text/css' href='./../skin_builder/custom/dhtmlxscheduler_custom.css'> -->
+</head>
+<script>
+
+	var bg_color, event_color;
+	var css;
+	var changed = false;
+	var _in_progress = false;
+
+
+	var presets = [{
+			bg: { 'hex': '4aff0f', 'name': 'Green' },
+			event: { 'hex': 'feff7c', 'name': 'Yellow' }
+		},{
+			bg: { 'hex': 'ed9f9f', 'name': 'Red' },
+			event: { 'hex': 'c99e65', 'name': 'Brown' }
+		},{
+			bg: { 'hex': 'e1e73b', 'name': 'Yellow' },
+			event: { 'hex': '76b839', 'name': 'Green' }
+		},{
+			bg: { 'hex': '96a4cf', 'name': 'Blue' },
+			event: { 'hex': 'ffaa9c', 'name': 'Pink' }
+		},{
+			bg: { 'hex': 'c793ff', 'name': 'Violet' },
+			event: { 'hex': 'f3ff40', 'name': 'Lemon' }
+		},{
+			bg: { 'hex': 'ffac5e', 'name': 'Orange' },
+			event: { 'hex': 'ff4331', 'name': 'Red' }
+		},{
+			bg: { 'hex': '84f6ff', 'name': 'Cyan' },
+			event: { 'hex': 'c8adff', 'name': 'Violet' }
+		},{
+			bg: { 'hex': 'ed9fe2', 'name': 'Pink' },
+			event: { 'hex': 'bdc3fc', 'name': 'Dark blue' }
+			
+			
+		}
+		
+	];
+
+	window.onload = function() {
+		var locale = parent.conf.i18n.skins;
+		var els = document.getElementsByTagName('*');
+		for (var i in els) {
+			if (els[i].getAttribute) {
+				var attr = els[i].getAttribute('serialize');
+				if (attr == 'true') dhtmlxEvent(els[i], 'change', inputChanged);
+
+				var text = els[i].getAttribute('locale');
+				if (text != undefined) els[i].innerHTML = locale[text];
+			}
+		}
+
+		bg_color = new dhtmlXColorPicker(null,false,false,true,false);
+		bg_color.setImagePath("../imgs/");
+		bg_color.init();
+		bg_color.setPosition(20,20);
+		bg_color.setColor("#C2D5FC");
+		bg_color.linkTo("bg_preview", "bg_preview");
+		bg_color.setOnSelectHandler(function() {
+			changed = true;
+			inputChanged();
+		});
+
+
+		event_color = new dhtmlXColorPicker(null,false,false,true,false);
+		event_color.setImagePath("../imgs/");
+		event_color.init();
+		event_color.setPosition(320,20);
+		event_color.setColor("#FFE763");
+		event_color.linkTo("event_preview", "event_preview");
+		event_color.setOnSelectHandler(function() {
+			changed = true;
+			inputChanged();
+		});
+
+		parent.conf.loaded++;
+		parent.conf.loadingCheck();
+		reload();
+
+		dhtmlxEvent(document.getElementById("use"), "change", expand_form);
+
+		var apply = document.getElementById("apply");
+		dhtmlxEvent(apply, "mouseover", function() { hover(apply); });
+		dhtmlxEvent(apply, "mouseout", function() { out(apply); });
+
+		make_presets();
+
+		var els = document.getElementById("presets").childNodes;
+		for (var i = 0; i < els.length; i++) {
+			if (els[i].className == 'line') {
+				var el = els[i];
+				dhtmlxEvent(el, "mouseover", (function(in_el) { return (function() { hover(in_el); }); })(el));
+				dhtmlxEvent(el, "mouseout", (function(in_el) { return (function() { out(in_el); }) })(el));
+				dhtmlxEvent(el, "click", (function(in_el) { return (function() { preset(in_el); }) })(el));
+			}
+		}
+	}
+	
+	function expand_form() {
+		var el = document.getElementById("use");
+		var form = document.getElementById("skins_form");
+		form.className = (el.checked) ? 'dhtmlxSettingPanel long' : 'dhtmlxSettingPanel short';
+	}
+
+	function make_presets() {
+		var html = '';
+		for (var i = 0; i < presets.length; i++) {
+			var bg = presets[i].bg;
+			var event = presets[i].event;
+			var c = '<div class="line">';
+			c += '<div class="prev bg" style="background-color: #' + bg.hex + ';">';
+			c += '<div class="color"></div>';
+			c += '<div class="name">' + bg.name + '</div>';
+			c += '<input type="hidden" name="bg_value" value="' + bg.hex + '" />';
+			c += '</div>';
+			c += '<div class="prev event" style="background-color: #' + event.hex + ';">';
+			c += '<div class="color"></div>';
+			c += '<div class="name">' + event.name + '</div>';
+			c += '<input type="hidden" name="event_value" value="' + event.hex + '" />';
+			c += '</div>';
+			c += '</div>';
+			html += c;
+		}
+		document.getElementById('presets').innerHTML = html;;
+	}
+
+	function preset(el) {
+		var locale = parent.conf.i18n.skins;
+		if (changed === false || (changed === true && confirm(locale.confirm))) {
+			var inp = el.getElementsByTagName('input');
+			set_color('bg', inp[0].value);
+			set_color('event', inp[1].value);
+			apply();
+			inputChanged();
+			changed = false;
+		}
+	}
+
+	function inputChanged() {
+		parent.conf.getXML();
+		return true;
+	}
+
+	function getOptions() {
+		var checked = document.getElementById('use').checked;
+		var xml = '<use>' + (checked ? 'true' : 'false') + '</use>';
+		xml += '<bg>' + bg_color.getSelectedColor()[0] + '</bg>';
+		xml += '<event>' + event_color.getSelectedColor()[0] + '</event>';
+		return xml;
+	}
+
+	function setOptions(xml) {
+		if (!xml) return;
+		var els = xml.childNodes;
+		for (var i = 0; i < els.length; i++) {
+			var value = (els[i].childNodes[0]) ? els[i].childNodes[0].nodeValue : '';
+			var el = document.getElementById(els[i].nodeName);
+			if (el) {
+				if (el.getAttribute('type') == 'checkbox') {
+					el.checked = (value == 'true') ? true : false;
+				} else {
+					el.value = value;
+				}
+			}
+		}
+		expand_form();
+		var bg = xml.getElementsByTagName('bg')[0].firstChild.nodeValue;
+		var event = xml.getElementsByTagName('event')[0].firstChild.nodeValue;
+		set_color('bg', bg);
+		set_color('event', event);
+	}
+
+	function set_color(name, color) {
+		document.getElementById(name + '_preview').style.backgroundColor = color;
+		window[name + '_color'].setColor(color);
+	}
+
+	function apply() {
+		if (_in_progress) return;
+		_in_progress = true;
+		var bg = bg_color.getSelectedColor()[0];
+		var event = event_color.getSelectedColor()[0];
+		var url = parent.conf.url_load + "&skin=true";
+		url += '&bg=' + encodeURIComponent(bg) + '&event=' + encodeURIComponent(event);
+		document.getElementById('holder').style.display = 'block';
+		document.getElementById('skin_progress').style.display = 'block';
+		dhtmlxAjax.get(url, function() {
+			reload();
+			window.setTimeout(function() {
+				document.getElementById('holder').style.display = 'none';
+				document.getElementById('skin_progress').style.display = 'none';
+				_in_progress = false;
+			}, 300);
+		});
+	}
+
+	function reload() {
+		var old = css;
+		css = document.createElement('link');
+		css.setAttribute('rel', 'stylesheet');
+		css.setAttribute('type', 'text/css');
+		css.setAttribute('href', './../skin_builder/custom/dhtmlxscheduler_custom.css?' + (new Date).valueOf());
+		document.body.appendChild(css);
+		if (old)
+			old.parentNode.removeChild(old);
+	}
+
+	function hover(el) { el.className += " hover"; }
+	function out(el) { el.className = el.className.replace(/ hover/g, ""); }
+</script>
+<body>
+	<div class="dhtmlxLeftDiv" style="width: 260px;">
+		<div class="dhtmlxSettingPanelLabel" locale="base_colors" style="top: 11px; left: 10px;z-index:10;">Base colors</div>
+		<div class="clr">&nbsp;</div>
+		<div class="dhtmlxSettingPanel short" id="skins_form" style="padding-top: 10px; margin-top: 0px; position: relative;">
+
+			<div class="dhtmlxInputCheckbox"><input type="checkbox" name="skins_custom" id="use" class="dhtmlxInputCheckbox" serialize="true" /></div>
+			<label for="use" class="dhtmlxInputLabel" locale="use_custom" style="float: left; width: 82%;">Use custom style</label>
+			<div class="clr">&nbsp;</div>
+	
+			<div style="float: left; width: 138px;">
+				<div id="bg_preview" class="color_preview"></div>
+				<label for="bg_preview" class="dhtmlxInputLabel" locale="bg" style="float: left; width: 100px;">Background color</label>
+				<div class="clr">&nbsp;</div>
+				<div id="event_preview" class="color_preview"></div>
+				<label for="event_preview" class="dhtmlxInputLabel" locale="event" style="float: left; width: 100px;">Event color</label>
+				<div class="clr">&nbsp;</div>
+			</div>
+			<div style="float: right; width: 100px; padding-top: 18px;">
+				<div class="skin_apply" id="apply" locale="apply" onclick="apply();">Apply</div>
+			</div>
+			
+			
+			<div class="clr">&nbsp;</div>
+
+			<div class="presets_label" locale="presets">Presets</div>
+			<div class="presets" id="presets"></div>
+
+
+			<div class="clr">&nbsp;</div>
+		</div>
+	</div>
+	<div class="dhtmlxRightDiv" style="width: 502px;">
+		<div class="dhtmlxSettingPanel" style="height: 380px; margin-bottom: 0px; position: relative; background-color: #EEE; padding: 0px;">
+			<div class="dhtmlxSettingPanelLabel" locale="preview" style="top: -10px; z-index: 5; left: 10px;">Preview</div>
+			<div class="clr">&nbsp;</div>
+			<div class="fake_scheduler">
+				<div class="holder" id="holder"></div>
+				<div class="skin_progress" id="skin_progress"></div>
+				<div class="dhx_cal_container" style="height: 300px;">
+					<div class="dhx_cal_navline">
+						<div class="dhx_cal_prev_button"></div>
+						<div class="dhx_cal_next_button"></div>
+						<div class="dhx_cal_today_button">Today</div>
+						<div class="dhx_cal_date">06 Feb 2012 - 12 Feb 2012</div>
+						<div class="dhx_cal_tab" style="right: 20px;">Month</div>
+						<div class="dhx_cal_tab active" style="right: 84px;">Week</div>
+					</div>
+					<div class="dhx_cal_header">
+						<div class="dhx_scale_bar" style="left: 0px;">Mon, 06</div>
+						<div class="dhx_scale_bar" style="left: 64px;">Tue, 07</div>
+						<div class="dhx_scale_bar" style="left: 128px;">Wed, 08</div>
+						<div class="dhx_scale_bar" style="left: 192px;">Thu, 09</div>
+						<div class="dhx_scale_bar" style="left: 256px;">Fri, 10</div>
+						<div class="dhx_scale_bar" style="left: 320px;">Sat, 11</div>
+						<div class="dhx_scale_bar" style="left: 384px;">Sun, 12</div>
+					</div>
+					<div class="dhx_multi_day">
+						<div class="dhx_multi_day_icon"></div>
+						<div class="dhx_cal_event_line" style="position: absolute; top: 2px; left: 139px; width: 334px;">
+							<span title="Line event">Line event</span>
+						</div>
+					</div>
+					<div class="dhx_cal_data">
+						<div class="dhx_scale_holder" style="left: 50px;"></div>
+						<div class="dhx_scale_holder" style="left: 115px;">
+							<div class="dhx_cal_event" style="position:absolute; top:132px; left:2px; width:59px; height:60px;">
+								<div class="dhx_header" style="width:55px;"></div>
+								<div class="dhx_title">12:20 - 15:20</div>
+								<div class="dhx_body" style="width:47px; height:60px;">Bar event</div>
+								<div class="dhx_footer" style="width:53px;"></div>
+							</div>
+						</div>
+						<div class="dhx_scale_holder" style="left: 180px; width: 63px;"></div>
+						<div class="dhx_scale_holder_now" style="left: 244px; width: 63px;"></div>
+						<div class="dhx_scale_holder" style="left: 308px; width: 63px;">
+							<div class="dhx_cal_event" style="position:absolute; top:64px; left:2px; width:59px; height:60px;">
+								<div class="dhx_header" style="width:55px;"></div>
+								<div class="dhx_title">10:00 - 13:05</div>
+								<div class="dhx_body" style="width:47px; height:60px;">Bar event</div>
+								<div class="dhx_footer" style="width:53px;"></div>
+							</div>
+						</div>
+						<div class="dhx_scale_holder" style="left: 372px; width: 63px;"></div>
+						<div class="dhx_scale_holder" style="left: 436px;"></div>
+						<div class="dhx_scale_holder" style="width: 50px;">
+							<div class="dhx_scale_hour" style="top: 0px;">08:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">09:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">10:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">11:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">12:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">13:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">14:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">15:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">16:00</div>
+							<div class="dhx_scale_hour" style="top: 0px;">17:00</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
