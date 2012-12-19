@@ -51,4 +51,4 @@ If scheduler\_xml\_version if bigger than scheduler\_php\_version then it parses
 At the same time configurator updates scheduler_php_version to actual.  
 If scheduler\_xml\_version equals scheduler\_php\_version than xml is already parsed and serialized php configuration may be used.  
 
-Read more about dhtmlxScheduler Joomla! component in [documentation](https://github.com/DHTMLX/scheduler-joomla/wiki/dhtmlxScheduler-for-Joomla!).
+Read more about dhtmlxScheduler Joomla! component in [documentation](https://github.com/DHTMLX/scheduler-wordpress/wiki/dhtmlxScheduler-for-Wordpress).
